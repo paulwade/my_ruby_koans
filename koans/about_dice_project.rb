@@ -2,9 +2,23 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 
 # Implement a DiceSet Class here:
 #
-# class DiceSet
-#   code ...
-# end
+class DiceSet
+  def roll(dice)
+    if dice <= 0
+      raise ArgumentError.new("Number of dice must be greater than 0.")
+    end
+    @values = Array.new
+    (1..dice).each do
+      @values << a_roll
+    end
+  end
+  def values
+    @values
+  end
+  def a_roll
+    1 + rand(6)
+  end
+end
 
 class AboutDiceProject < EdgeCase::Koan
   def test_can_create_a_dice_set
@@ -58,6 +72,14 @@ class AboutDiceProject < EdgeCase::Koan
 
     dice.roll(1)
     assert_equal 1, dice.values.size
+  end
+
+  def test_you_must_have_at_least_one_die
+
+    assert_raise(ArgumentError) do
+      dice = DiceSet.new
+      dice.roll(0)
+    end
   end
 
 end
