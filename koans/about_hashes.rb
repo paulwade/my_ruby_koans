@@ -103,10 +103,12 @@ class AboutHashes < EdgeCase::Koan
     assert_equal "dos", hash2[:two]
     assert_equal "dos", hash2[:three]
     assert_equal "dos", hash2[:five]
-    
+
     # ENLIGHTENMENT:
-    # Ok, this is a little weird.  Obviously initializing a Hash
-    # with just #new creates a hash with nil values.
+    # Hashes initialized with literals or #new result in non-existent keys
+    # returning nil.  Initialized with a value causes non-existent keys
+    # to return that default value.  However, regardless of how it is
+    # initialized, #fetch will throw an exception.
     
   end
 
@@ -116,11 +118,11 @@ class AboutHashes < EdgeCase::Koan
     hash[:one] << "uno"
     hash[:two] << "dos"
 
-    assert_equal __, hash[:one]
-    assert_equal __, hash[:two]
-    assert_equal __, hash[:three]
+    assert_equal ["uno", "dos"], hash[:one]
+    assert_equal ["uno", "dos"], hash[:two]
+    assert_equal ["uno", "dos"], hash[:three]
 
-    assert_equal __, hash[:one].object_id == hash[:two].object_id
+    assert_equal true, hash[:one].object_id == hash[:two].object_id
   end
 
   def test_default_value_with_block
@@ -129,8 +131,15 @@ class AboutHashes < EdgeCase::Koan
     hash[:one] << "uno"
     hash[:two] << "dos"
 
-    assert_equal __, hash[:one]
-    assert_equal __, hash[:two]
-    assert_equal __, hash[:three]
+    assert_equal ["uno"], hash[:one]
+    assert_equal ["dos"], hash[:two]
+    assert_equal [], hash[:three]
+
+    # ENLIGHTENMENT:
+    # I'm really going to need to research this one.  I don't
+    # understand the syntax in the block at all.  Perhaps I'll
+    # get to revisit this once I find a Koan referring to the
+    # pipes.
+
   end
 end
