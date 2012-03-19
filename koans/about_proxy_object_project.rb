@@ -11,14 +11,38 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 # The proxy class is started for you.  You will need to add a method
 # missing handler and any other supporting methods.  The specification
 # of the Proxy class is given in the AboutProxyObjectProject koan.
+#
+# ENLIGHTENMENT:
+# This was really fun.  It took me awhile to get this working because my first approach
+# was to keep trying to catch everything in #method_missing and then I realized I was
+# being dense and added the #called?, #messages, and #number_of_times_called.  I could
+# probably even eliminate the #messages method but I'm not sure how to do that so rather
+# than futz with it I'll leave it alone.
 
 class Proxy
+
   def initialize(target_object)
     @object = target_object
-    # ADD MORE CODE HERE
+    @messages = Array.new
   end
 
-  # WRITE CODE HERE
+  def messages
+    @messages
+  end
+
+  def called?(method_name)
+    @messages.include?method_name
+  end
+
+  def number_of_times_called(method_name)
+    @messages.count(method_name)
+  end
+
+  def method_missing(method_name, *args, &block)
+    @messages << method_name
+    @object.__send__(method_name, *args, &block)
+  end
+
 end
 
 # The proxy object should pass the following Koan:
